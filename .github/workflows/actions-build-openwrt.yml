@@ -38,6 +38,27 @@ jobs:
         run: |
           git clone ${{ env.LEDE_REPO_URL }}
           ls 
-          echo "src-git sirpdboy-package https://github.com/sirpdboy/sirpdboy-package" >> ./lede/feeds.conf.default
-          echo "src-git openwrt-packages https://github.com/kiddin9/openwrt-packages.git" >> ./lede/feeds.conf.default
-          cat ./lede/feeds.conf.default
+          cd lede
+          echo "src-git sirpdboy-package https://github.com/sirpdboy/sirpdboy-package" >> ./feeds.conf.default
+          echo "src-git openwrt-packages https://github.com/kiddin9/openwrt-packages.git" >> ./feeds.conf.default
+          cat ./feeds.conf.default
+
+      - name: 生成默认配置
+        run: |
+          ls
+          cd lede 
+          make defconfig
+          cat .config
+
+
+
+
+
+
+
+
+
+
+
+
+
