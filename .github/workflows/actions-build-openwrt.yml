@@ -47,6 +47,11 @@ jobs:
           cat ./feeds.conf.default
           make defconfig
           cat .config
+      - name: 查看默认配置
+        run: |
+          cd lede
+          ls
+          cat .config
 
 
 
