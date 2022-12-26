@@ -4,6 +4,7 @@ on: [push]
 
 env:
   LEDE_REPO_URL: https://github.com/coolsnowwolf/lede.git
+  WORKDIR: /workdir
 
 jobs:
   build-openwrt:
@@ -11,14 +12,16 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: /workdir
+        working-directory: $WORKDIR
 
     steps:
       - name: 检出当前工程
         uses: actions/checkout@main
 
       - name: 创建工作目录
-        run: mkdir -p /workdir
+        run: |
+          sudo mkdir -p $WORKDIR
+          sudo chown $USER:$GROUP $WORKDIR
 
 #       - name: 初始化执行环境
 #         run: |
