@@ -17,6 +17,8 @@ jobs:
       - name: 检出当前工程
         uses: actions/checkout@main
 
+      - name: 创建工作目录
+        run: [ ! -d /workdir ] && mkdir /workdir
 #       - name: 初始化执行环境
 #         run: |
 #           sudo apt update -y
