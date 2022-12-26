@@ -12,7 +12,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: $WORKDIR
+        working-directory: ${{ env.WORKDIR }}
 
     steps:
       - name: 检出当前工程
@@ -20,8 +20,8 @@ jobs:
 
       - name: 创建工作目录
         run: |
-          sudo mkdir -p $WORKDIR
-          sudo chown $USER:$GROUP $WORKDIR
+          sudo mkdir -p ${{ env.WORKDIR }}
+          sudo chown $USER:$GROUP ${{ env.WORKDIR }}
 
 #       - name: 初始化执行环境
 #         run: |
