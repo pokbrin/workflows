@@ -8,10 +8,6 @@ env:
 jobs:
   build-openwrt:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: ${{ env.WORKDIR }}
 
     steps:
       - name: 检出当前工程
