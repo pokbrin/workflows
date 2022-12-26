@@ -4,7 +4,6 @@ on: [push]
 
 env:
   LEDE_REPO_URL: https://github.com/coolsnowwolf/lede.git
-  WORKDIR: /workdir
 
 jobs:
   build-openwrt:
@@ -18,10 +17,11 @@ jobs:
       - name: 检出当前工程
         uses: actions/checkout@main
 
-      - name: 创建工作目录
+      - name: 检查工作环境
         run: |
-          sudo mkdir -p ${{ env.WORKDIR }}
-          sudo chown $USER:$GROUP ${{ env.WORKDIR }}
+          echo "LEDE 源码地址：${{ env.LEDE_REPO_URL }}"
+          echo "系统: ${{ runner.os }}"
+          echo "工作空间: ${{ github.workspace }}"
 
 #       - name: 初始化执行环境
 #         run: |
@@ -35,6 +35,4 @@ jobs:
 # rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
 
       - name: 下载lede源码
-        run: |
-          git clone $LEDE_REPO_URL
-          echo '当前工作目录为 ${{ github.workspace }}'
+        run: git clone $LEDE_REPO_URL
