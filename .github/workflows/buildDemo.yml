@@ -5,12 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [10, 12, 14]
-        os:
-          - os1
-          - os2
+        v: 
+          - 1
+          - 2
     steps:
-      - name: check node version1⃣️
+      - name: check node version1
         run: |
           node -v
           npm -v
@@ -18,7 +17,7 @@ jobs:
         uses: actions/setup-node@main
         with:
           node-version: ${{ matrix.version }}
-      - name: check node version2⃣️
+      - name: check node version2
         run: |
           node -v
           npm -v
