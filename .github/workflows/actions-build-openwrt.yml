@@ -56,10 +56,9 @@ jobs:
 
       - name: 开始编译
         run: |
+          cd lede
           echo "core $(($(nproc)+1))"
-
           make download -j$(($(nproc)+1))
-
           make V=s -j$(nproc)
 
       - name: 开始打包
