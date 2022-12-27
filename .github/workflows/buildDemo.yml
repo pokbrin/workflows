@@ -1,13 +1,14 @@
 name: 矩阵测试
-on: [push]
+on: 
+  repository_dispatch:
+    types:
+      - test
 jobs:
   example_matrix:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        v: 
-          - 1
-          - 2
+       version: ${{ github.event.client_payload.versions }}
     steps:
       - name: check node version1
         run: |
