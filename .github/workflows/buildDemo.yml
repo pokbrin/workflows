@@ -1,0 +1,20 @@
+name: 矩阵测试
+on: [push]
+jobs:
+  example_matrix:
+    strategy:
+      matrix:
+        version: [10, 12, 14]
+    steps:
+      - name: check node version1⃣️
+        run: |
+          node -v
+          npm -v
+      - name: 设置node版本
+        uses: actions/setup-node@main
+        with:
+          node-version: ${{ matrix.version }}
+      - name: check node version2⃣️
+        run: |
+          node -v
+          npm -v
