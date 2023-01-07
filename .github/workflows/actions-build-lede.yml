@@ -8,8 +8,7 @@ env:
   LEDE_REPO_URL: https://github.com/coolsnowwolf/lede.git
   TZ: Asia/Shanghai
   IP: 192.168.1.88
-
-
+  ARCH: x86_64
 
 jobs:
   build-openwrt:
@@ -51,11 +50,12 @@ jobs:
           ls
 
       - name: 初始化配置
+#        echo "修改IP地址为: $IP"
+#        sed -i "s/192\.168\.1\.1/$IP/g" ./package/base-files/files/bin/config_generate
         run: |
           cp lede-config/x86_config lede/.config
           cd lede
-          echo "修改IP地址为: $IP"
-          sed -i "s/192\.168\.1\.1/$IP/g" ./package/base-files/files/bin/config_generate
+          sed -i "s/192\.168\.1\.1/$IP/g" ./.config
           cat ./package/base-files/files/bin/config_generate
           cat .config
 
@@ -82,7 +82,7 @@ jobs:
         uses: actions/cache@main
         with:
           path: ${{ github.workspace }}/lede
-          key: cache-key-lede-${{ matrix.target }}
+          key: cache-key-lede-$ARCH
       #          restore-keys: |
       #            cache-key-lede-${{ matrix.target }}
 
