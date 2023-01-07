@@ -10,14 +10,16 @@ env:
   IP: 192.168.1.88
 
 
+
 jobs:
   build-openwrt:
     runs-on: ubuntu-latest
-    name: Build ${{ matrix.target }}
-    strategy:
-      fail-fast: false
-      matrix:
-        target: [ ${ { github.event.client_payload.target } } ]
+    name: Build ${{ env.LEDE_REPO_URL }}
+#    name: Build ${{ matrix.target }}
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        target: [ ${ { github.event.client_payload.target } } ]
 
     steps:
       - name: 检出当前工程
