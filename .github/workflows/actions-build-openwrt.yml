@@ -1,8 +1,8 @@
 name: 编译OpenWrt
 
-on:
-  watch:
-    types: [started]
+# on:
+#   watch:
+#     types: [started]
 
 env:
   LEDE_REPO_URL: https://github.com/coolsnowwolf/lede.git
