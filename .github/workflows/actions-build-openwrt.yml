@@ -1,6 +1,8 @@
 name: 编译 LEDE
+#on:
+#  repository_dispatch:
 on:
-  repository_dispatch:
+  push
 
 env:
   LEDE_REPO_URL: https://github.com/coolsnowwolf/lede.git
