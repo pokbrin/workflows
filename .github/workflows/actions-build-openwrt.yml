@@ -14,7 +14,7 @@ env:
 jobs:
   build-openwrt:
     runs-on: ubuntu-latest
-    name: Build ${{ env.LEDE_REPO_URL }}
+    name: Build ${{ LEDE_REPO_URL }}
 #    name: Build ${{ matrix.target }}
 #    strategy:
 #      fail-fast: false
@@ -27,7 +27,7 @@ jobs:
 
       - name: 检查工作环境
         run: |
-          echo "LEDE 源码地址: ${{ env.LEDE_REPO_URL }}"
+          echo "LEDE 源码地址: ${{ LEDE_REPO_URL }}"
           echo "系统: ${{ runner.os }}"
           echo "工作空间: ${{ github.workspace }}"
           echo "查看系统发行版"
@@ -47,15 +47,15 @@ jobs:
 
       - name: 下载lede源码
         run: |
-          git clone ${{ env.LEDE_REPO_URL }}
+          git clone ${{ LEDE_REPO_URL }}
           ls
 
       - name: 初始化配置
         run: |
           cp lede-config/x86_config lede/.config
           cd lede
-          echo "修改IP地址为: ${{ env.IP }}"
-          sed -i 's/192\.168\.1\.1/${{ env.IP }}/g' ./package/base-files/files/bin/config_generate
+          echo "修改IP地址为: ${{ IP }}"
+          sed -i 's/192\.168\.1\.1/${{ IP }}/g' ./package/base-files/files/bin/config_generate
           cat ./package/base-files/files/bin/config_generate
           cat .config
 
