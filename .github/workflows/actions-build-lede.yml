@@ -46,7 +46,8 @@ jobs:
       - name: 检查-下载lede源码
         run: |
           ls
-          [ ! -d ${{ github.workspace }}/lede ] && git clone $LEDE_REPO_URL && cd lede && ls
+          [ ! -d ${{ github.workspace }}/lede ] && git clone $LEDE_REPO_URL 
+          cd lede && ls
 
       - name: 检查-更新lede源码
         run: |
