@@ -39,11 +39,13 @@ jobs:
         with:
           path: ${{ github.workspace }}/lede
           key: cache-key-lede-${{ env.ARCH }}
+#         restore-keys: |
+#           cache-key-lede-${{ matrix.target }}
 
       - name: 检查-下载lede源码
         run: |
           [ ! -d "${{ github.workspace }}/lede" ] && cd lede && git clone $LEDE_REPO_URL
-          ls
+          cd lede && ls
 
       - name: 检查-更新lede源码
         run: |
@@ -61,49 +63,49 @@ jobs:
       - name: 更新feeds
         run: |
           cd lede
-          [[ ! -d ./lede/package/feeds/sirpdboy || ! -d ./lede/package/feeds/kiddin9 ]] && echo "src-git sirpdboy https://github.com/sirpdboy/sirpdboy-package" >> ./feeds.conf.default && echo "src-git kiddin9 https://github.com/kiddin9/openwrt-packages.git" >> ./feeds.conf.default && cat ./feeds.conf.default && ./scripts/feeds update -a && ./scripts/feeds install -a \
+          echo "src-git sirpdboy https://github.com/sirpdboy/sirpdboy-package" >> ./feeds.conf.default
+          echo "src-git kiddin9 https://github.com/kiddin9/openwrt-packages.git" >> ./feeds.conf.default 
+          cat ./feeds.conf.default 
+          ./scripts/feeds update -a && ./scripts/feeds install -a
+
+      - name: 初始化执行环境
+        #sudo apt full-upgrade -y
+        run: |
+          sudo apt update -y
+          sudo apt install -y ack antlr3 aria2 asciidoc autoconf automake autopoint binutils bison build-essential \
+          bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib \
+          git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev \
+          libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libreadline-dev libssl-dev libtool lrzsz \
+          mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pip libpython3-dev qemu-utils \
+          rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
+          sudo timedatectl set-timezone "$TZ"
+
+      - name: make download
+        run: |
+          cd lede
+          make download -j$(($(nproc)+1))
+
+      - name: 开始编译
+        run: |
+          cd lede
+          make V=s -j$(($(nproc)+1))
+
+      - name: 开始打包
+        run: |
+          cd lede
+          tar -czvf /tmp/openwrt.tar.gz bin/targets
+
+      - name: 上传文件
+        uses: actions/upload-artifact@main
+        with:
+          name: openwrt.tar.gz
+          path: /tmp/openwrt.tar.gz
+          if-no-files-found: error
 
       - name: 清理文件
+        if: ${{ always() }}
         run: |
           cd lede
           git restore .
-          rm -rf .config /bin 
-
-#      - name: 初始化执行环境
-#        #sudo apt full-upgrade -y
-#        run: |
-#          sudo apt update -y
-#          sudo apt install -y ack antlr3 aria2 asciidoc autoconf automake autopoint binutils bison build-essential \
-#          bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib \
-#          git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev \
-#          libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libreadline-dev libssl-dev libtool lrzsz \
-#          mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pip libpython3-dev qemu-utils \
-#          rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
-#          sudo timedatectl set-timezone "$TZ"
-
-#      - name: make download
-#        run: |
-#          cd lede
-#          make download -j$(($(nproc)+1))
-#
-#      - name: 开始编译
-#        run: |
-#          cd lede
-#          make V=s -j$(($(nproc)+1))
-
-
-      #          restore-keys: |
-      #            cache-key-lede-${{ matrix.target }}
-
-#      - name: 开始打包
-#        run: |
-#          cd lede
-#          tar -czvf /tmp/openwrt.tar.gz bin/targets
-#
-#      - name: 上传文件
-#        uses: actions/upload-artifact@main
-#        with:
-#          name: openwrt.tar.gz
-#          path: /tmp/openwrt.tar.gz
-#          if-no-files-found: error
+          rm -rf .config ./bin
 
