@@ -70,47 +70,45 @@ jobs:
           ./scripts/feeds update -a -f && ./scripts/feeds install -a -f
           [ -d package/feeds ] && ls package/feeds
 
+
+      - name: 初始化执行环境
+        run: |
+          sudo apt update -y
+          sudo apt full-upgrade -y
+          sudo apt install -y ack antlr3 aria2 asciidoc autoconf automake autopoint binutils bison build-essential \
+          bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib \
+          git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev \
+          libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libreadline-dev libssl-dev libtool lrzsz \
+          mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pip libpython3-dev qemu-utils \
+          rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
+          sudo timedatectl set-timezone "$TZ"
+
+      - name: make download
+        run: |
+          cd lede
+          make download -j$(($(nproc)+1))
+
+      - name: 开始编译
+        # make V=s -j$(($(nproc)+1))
+        run: |
+          cd lede
+          make V=s -j$(($(nproc)+1))
+
+      - name: 开始打包
+        run: |
+          cd lede
+          tar -czvf /tmp/openwrt.tar.gz bin/targets
+
+      - name: 上传文件
+        uses: actions/upload-artifact@main
+        with:
+          name: openwrt.tar.gz
+          path: /tmp/openwrt.tar.gz
+          if-no-files-found: error
+
       - name: 清理文件
         if: ${{ always() }}
         run: |
           [ -d ${{ github.workspace }}/lede ] && cd ${{ github.workspace }}/lede && git restore . && ./scripts/feeds uninstall -a
-          cd ${{ github.workspace }}
-          rm -rf lede/.config lede/bin lede/feeds lede/package/feeds lede/feeds.conf
-          ls lede
-
-
-      # - name: 初始化执行环境
-      #   run: |
-      #     sudo apt update -y
-      #     sudo apt full-upgrade -y
-      #     sudo apt install -y ack antlr3 aria2 asciidoc autoconf automake autopoint binutils bison build-essential \
-      #     bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib \
-      #     git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev \
-      #     libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libreadline-dev libssl-dev libtool lrzsz \
-      #     mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pip libpython3-dev qemu-utils \
-      #     rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
-      #     sudo timedatectl set-timezone "$TZ"
-
-      # - name: make download
-      #   run: |
-      #     cd lede
-      #     make download -j$(($(nproc)+1))
-
-      # - name: 开始编译
-      #   # make V=s -j$(($(nproc)+1))
-      #   run: |
-      #     cd lede
-      #     make V=s -j1
-
-      # - name: 开始打包
-      #   run: |
-      #     cd lede
-      #     tar -czvf /tmp/openwrt.tar.gz bin/targets
-
-      # - name: 上传文件
-      #   uses: actions/upload-artifact@main
-      #   with:
-      #     name: openwrt.tar.gz
-      #     path: /tmp/openwrt.tar.gz
-      #     if-no-files-found: error
-
+          rm -rf env dl .config .config.old bin build_dir staging_dir tmp logs feeds feeds.conf files overlay package/feeds package/openwrt-packages
+          ls
