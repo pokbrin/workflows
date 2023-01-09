@@ -54,13 +54,11 @@ jobs:
 #          sudo timedatectl set-timezone "$TZ"
 
       - name: 下载lede源码
-        # 如果仓库不存在
         if: [ ! -d ${{ github.workspace }}/lede ]
         run: |
           git clone $LEDE_REPO_URL
           ls
       - name: 更新lede源码
-        # 如果仓库存在
         if: [ -d ${{ github.workspace }}/lede ]
         run: |
           cd lede
