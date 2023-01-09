@@ -54,21 +54,32 @@ jobs:
 #          sudo timedatectl set-timezone "$TZ"
 
       - name: 下载lede源码
+        # 如果仓库不存在
+        if: [ ! -d ${{ github.workspace }}/lede ]
         run: |
           git clone $LEDE_REPO_URL
           ls
+      - name: 更新lede源码
+        # 如果仓库存在
+        if: [ -d ${{ github.workspace }}/lede ]
+        run: |
+          cd lede
+          echo 'clean git modify files!!'
+          rm -rf .config bin
+          git status
+          git restore .
+          git status
+          git pull --rebase $LEDE_REPO_URL
 
       - name: 初始化配置
-#        echo "修改IP地址为: $IP"
-#        sed -i "s/192\.168\.1\.1/$IP/g" ./package/base-files/files/bin/config_generate
         run: |
           cp lede-config/x86_config lede/.config
           cd lede
           sed -i "s/192\.168\.1\.1/$IP/g" ./.config
-          cat ./package/base-files/files/bin/config_generate
           cat .config
 
       - name: 更新feeds
+        if: [[ ! -d ${{ github.workspace }}/lede/package/feeds/sirpdboy || ! -d ${{ github.workspace }}/lede/package/feeds/kiddin9 ]]
         run: |
           cd lede
           echo "src-git sirpdboy https://github.com/sirpdboy/sirpdboy-package" >> ./feeds.conf.default
@@ -102,3 +113,8 @@ jobs:
 #          name: openwrt.tar.gz
 #          path: /tmp/openwrt.tar.gz
 #          if-no-files-found: error
+
+      - name: 清理文件
+        run: |
+          cd lede
+          git 
