@@ -62,11 +62,11 @@ jobs:
           cat .config
 
       - name: 更新feeds
+        # echo "src-git kiddin9 https://github.com/kiddin9/openwrt-packages.git" >> ./feeds.conf
         run: |
           cd lede
           echo "src-git vernesong https://github.com/vernesong/OpenClash.git" >> ./feeds.conf
           echo "src-git sirpdboy https://github.com/sirpdboy/sirpdboy-package" >> ./feeds.conf
-          echo "src-git kiddin9 https://github.com/kiddin9/openwrt-packages.git" >> ./feeds.conf
           ./scripts/feeds update -a -f && ./scripts/feeds install -a -f
           [ -d package/feeds ] && ls package/feeds
 
@@ -108,7 +108,8 @@ jobs:
 
       - name: 清理文件
         if: ${{ always() }}
+        # rm -rf env dl .config .config.old bin build_dir staging_dir tmp logs feeds feeds.conf files overlay package/feeds package/openwrt-packages
         run: |
           [ -d ${{ github.workspace }}/lede ] && cd ${{ github.workspace }}/lede && git restore . && ./scripts/feeds uninstall -a
-          rm -rf env dl .config .config.old bin build_dir staging_dir tmp logs feeds feeds.conf files overlay package/feeds package/openwrt-packages
+          rm -rf env dl .config .config.old bin build_dir staging_dir tmp logs feeds.conf files overlay
           ls
