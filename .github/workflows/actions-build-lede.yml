@@ -39,7 +39,6 @@ jobs:
         with:
           path: ${{ github.workspace }}/lede
           key: cache-key-lede-${{ env.ARCH }}
-
       - name: 下载lede源码
         if: [ ! -d "${{ github.workspace }}/lede" ]
         run: |
