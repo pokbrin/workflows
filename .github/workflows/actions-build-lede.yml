@@ -45,7 +45,7 @@ jobs:
 
       - name: 检查-下载lede源码
         run: |
-          [ ! -d "${{ github.workspace }}/lede" ] && git clone $LEDE_REPO_URL && cd lede && ls
+          [ ! -d ${{ github.workspace }}/lede ] && git clone $LEDE_REPO_URL && cd lede && ls
 
       - name: 检查-更新lede源码
         run: |
@@ -72,7 +72,8 @@ jobs:
         if: ${{ always() }}
         run: |
           [ -d lede ] && cd lede && git restore . && ./scripts/feeds uninstall -a 
-          rm -rf lede/.config lede/bin lede/feeds lede/package/feeds
+          rm -rf lede/.config lede/bin lede/feeds lede/package/feeds lede/feeds.conf
+          ls lede
 
       # - name: 初始化执行环境
       #   run: |
