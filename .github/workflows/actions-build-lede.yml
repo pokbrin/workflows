@@ -73,10 +73,11 @@ jobs:
       - name: 清理文件
         if: ${{ always() }}
         run: |
-          [ -d lede ] && cd lede && git restore . && ./scripts/feeds uninstall -a 
+          [ -d ${{ github.workspace }}/lede ] && cd ${{ github.workspace }}/lede && git restore . && ./scripts/feeds uninstall -a
+          cd ${{ github.workspace }}
           rm -rf lede/.config lede/bin lede/feeds lede/package/feeds lede/feeds.conf
           ls lede
-          
+
 
       # - name: 初始化执行环境
       #   run: |
