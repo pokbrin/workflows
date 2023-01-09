@@ -112,4 +112,4 @@ jobs:
         run: |
           [ -d ${{ github.workspace }}/lede ] && cd ${{ github.workspace }}/lede && git restore . && ./scripts/feeds uninstall -a
           rm -rf env dl .config .config.old bin build_dir staging_dir tmp logs feeds.conf files overlay
-          ls
+          ls 
