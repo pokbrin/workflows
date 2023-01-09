@@ -32,6 +32,7 @@ jobs:
           echo "查看系统发行版:"
           cat /etc/lsb-release
           echo "core $(($(nproc)+1))"
+          pwd
 
       - name: 缓存配置
         id: cache
@@ -86,9 +87,10 @@ jobs:
           make download -j$(($(nproc)+1))
 
       - name: 开始编译
+        # make V=s -j$(($(nproc)+1))
         run: |
           cd lede
-          make V=s -j$(($(nproc)+1))
+          make V=s -j1
 
       - name: 开始打包
         run: |
