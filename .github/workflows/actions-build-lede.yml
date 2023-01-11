@@ -87,8 +87,13 @@ jobs:
         run: |
           cd lede
           make download -j$(($(nproc)+1))
+          
+      - name: make luci-base
+        run: |
+          cd lede
+          make package/feeds/luci/luci-base/compile V=s
 
-      - name: 开始编译
+      - name: make all
         # make V=s -j$(($(nproc)+1))
         run: |
           cd lede
