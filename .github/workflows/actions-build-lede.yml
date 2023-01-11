@@ -65,6 +65,7 @@ jobs:
         # echo "src-git kiddin9 https://github.com/kiddin9/openwrt-packages.git" >> ./feeds.conf
         run: |
           cd lede
+          cp feeds.conf.default feeds.conf
           echo "src-git vernesong https://github.com/vernesong/OpenClash.git" >> ./feeds.conf
           echo "src-git sirpdboy https://github.com/sirpdboy/sirpdboy-package" >> ./feeds.conf
           ./scripts/feeds update -a -f && ./scripts/feeds install -a -f
@@ -94,10 +95,9 @@ jobs:
           make package/feeds/luci/luci-base/compile V=s
 
       - name: make all
-        # make V=s -j$(($(nproc)+1))
         run: |
           cd lede
-          make V=s -j1
+          make V=s -j$(($(nproc)+1))
 
       - name: 开始打包
         run: |
