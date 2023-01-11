@@ -90,9 +90,10 @@ jobs:
           make download -j$(($(nproc)+1))
 
       - name: make all
+        # make V=s -j$(($(nproc)+1))
         run: |
           cd lede
-          make V=s -j$(($(nproc)+1))
+          make V=s -j1
 
       - name: 开始打包
         run: |
