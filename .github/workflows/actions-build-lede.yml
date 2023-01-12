@@ -6,14 +6,14 @@ on:
 
 env:
   LEDE_REPO_URL: https://github.com/coolsnowwolf/lede.git
-  TZ: Asia/Shanghai
   IP: 192.168.1.88
   ARCH: x86_64
+  ENABLE_CACHE: false
   #https://github.com/stupidloud/cachewrtbuild
 
 jobs:
   build-openwrt:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 #    name: Build ${{ matrix.target }}
 #    strategy:
 #      fail-fast: false
@@ -34,14 +34,15 @@ jobs:
           echo "core $(($(nproc)+1))"
           pwd
 
-      # - name: 缓存配置
-      #   id: cache
-      #   uses: actions/cache@main
-      #   with:
-      #     path: ${{ github.workspace }}/lede
-      #     key: cache-key-lede-${{ env.ARCH }}
-#         restore-keys: |
-#           cache-key-lede-${{ matrix.target }}
+      - name: 缓存配置
+        if: ${{ env.ENABLE_CACHE }} == 'true'
+        id: cache
+        uses: actions/cache@main
+        with:
+          path: ${{ github.workspace }}/lede
+          key: cache-key-lede-${{ env.ARCH }}
+        # restore-keys: |
+        #   cache-key-lede-${{ matrix.target }}
 
       - name: 检查-下载lede源码
         run: |
@@ -69,6 +70,7 @@ jobs:
           cp feeds.conf.default feeds.conf
           echo "src-git vernesong https://github.com/vernesong/OpenClash.git" >> ./feeds.conf
           echo "src-git sirpdboy https://github.com/sirpdboy/sirpdboy-package" >> ./feeds.conf
+          cat feeds.conf
           ./scripts/feeds update -a -f && ./scripts/feeds install -a -f
           [ -d package/feeds ] && ls package/feeds
 
@@ -83,7 +85,6 @@ jobs:
           libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libreadline-dev libssl-dev libtool lrzsz \
           mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pip libpython3-dev qemu-utils \
           rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
-          sudo timedatectl set-timezone "$TZ"
 
       - name: make download
         run: |
